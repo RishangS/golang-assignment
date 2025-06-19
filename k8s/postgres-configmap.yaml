@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: messaging-app
+data:
+  POSTGRES_DB: messanger
+  POSTGRES_USER: guest
+  POSTGRES_PASSWORD: guest 

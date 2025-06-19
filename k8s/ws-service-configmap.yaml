@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ws-service-config
+  namespace: messaging-app
+data:
+  AUTH_SERVICE_ADDR: "auth-service:50051"
+  KAFKA_BROKERS: "kafka:9092"
+  KAFKA_MESSAGES_TOPIC: "messages"
+  KAFKA_PERSIST_TOPIC: "persist" 

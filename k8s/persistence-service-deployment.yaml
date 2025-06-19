@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: persistence-service
+  namespace: messaging-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: persistence-service
+  template:
+    metadata:
+      labels:
+        app: persistence-service
+    spec:
+      containers:
+      - name: persistence-service
+        image: persistence-service:latest
+        imagePullPolicy: Never
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: persistence-service-config
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: persistence-service-config
+              key: DB_PORT
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: persistence-service-config
+              key: DB_NAME
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: persistence-service-config
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: persistence-service-config
+              key: DB_PASSWORD
+        - name: KAFKA_BROKERS
+          valueFrom:
+            configMapKeyRef:
+              name: persistence-service-config
+              key: KAFKA_BROKERS
+        - name: KAFKA_TOPIC
+          valueFrom:
+            configMapKeyRef:
+              name: persistence-service-config
+              key: KAFKA_TOPIC
+        - name: KAFKA_GROUP_ID
+          valueFrom:
+            configMapKeyRef:
+              name: persistence-service-config
+              key: KAFKA_GROUP_ID
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m" 

@@ -1,0 +1,29 @@
+# kafka-services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: messaging-app
+spec:
+  type: NodePort
+  ports:
+  - name: external
+    port: 9092
+    targetPort: 9092
+    nodePort: 31090
+  selector:
+    app: kafka
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-headless
+  namespace: messaging-app
+spec:
+  clusterIP: None
+  ports:
+  - name: internal
+    port: 9093
+    targetPort: 9093
+  selector:
+    app: kafka

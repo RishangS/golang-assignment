@@ -1,0 +1,37 @@
+# zookeeper-services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+  namespace: messaging-app
+  labels:
+    app: zookeeper
+spec:
+  ports:
+  - name: client
+    port: 2181
+    targetPort: 2181
+  selector:
+    app: zookeeper
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper-headless
+  namespace: messaging-app
+  labels:
+    app: zookeeper
+spec:
+  clusterIP: None
+  ports:
+  - name: client
+    port: 2181
+    targetPort: 2181
+  - name: peer
+    port: 2888
+    targetPort: 2888
+  - name: leader-election
+    port: 3888
+    targetPort: 3888
+  selector:
+    app: zookeeper

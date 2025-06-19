@@ -1,0 +1,69 @@
+# NOTE: Kafka topics 'messages' and 'persist' are now managed by Strimzi KafkaTopic resources.
+# Apply k8s/messages-topic.yaml and k8s/persist-topic.yaml before deploying ws-service.
+# Example:
+#   kubectl apply -f k8s/messages-topic.yaml
+#   kubectl apply -f k8s/persist-topic.yaml
+#
+# Then deploy ws-service as usual.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ws-service
+  namespace: messaging-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ws-service
+  template:
+    metadata:
+      labels:
+        app: ws-service
+    spec:
+      containers:
+      - name: ws-service
+        image: ws-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8081
+          name: websocket
+        env:
+        - name: AUTH_SERVICE_ADDR
+          valueFrom:
+            configMapKeyRef:
+              name: ws-service-config
+              key: AUTH_SERVICE_ADDR
+        - name: KAFKA_BROKERS
+          valueFrom:
+            configMapKeyRef:
+              name: ws-service-config
+              key: KAFKA_BROKERS
+        - name: KAFKA_MESSAGES_TOPIC
+          valueFrom:
+            configMapKeyRef:
+              name: ws-service-config
+              key: KAFKA_MESSAGES_TOPIC
+        - name: KAFKA_PERSIST_TOPIC
+          valueFrom:
+            configMapKeyRef:
+              name: ws-service-config
+              key: KAFKA_PERSIST_TOPIC
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 5 
